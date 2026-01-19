@@ -161,8 +161,7 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
             hotbar_selection_changed = true;
         }
 
-        // Only check for buffs every TICK_RATE ticks
-        if(state.tick_counter >= (TICK_RATE / 2) || hotbar_selection_changed)
+        if(state.tick_counter >= TICK_RATE || hotbar_selection_changed)
         {
             state.tick_counter = 0;
             on_buff_tick(player, playerRef, state, healthPreviewGUI);
@@ -267,13 +266,11 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
     {
         if(player == null || state == null || healthPreviewGUI == null) return;
         float heal_value_absolute = healthPreview.getBuffHealValueOfCurrentHeldItem(player);
-        float heal_value_percent = (heal_value_absolute / state.stored_max_health) + state.current_health_percentage;
+        float heal_value_percent = (heal_value_absolute / state.stored_max_health) + state.current_health_percentage + state.instant_heal_value_percent;
         if(heal_value_absolute != 0.0f)
         {
             healthPreviewGUI.updateFillBuff(heal_value_percent);
         }
-        
-        on_buff_tick(player, healthPreview.getPlayerRef(player), state, healthPreviewGUI);
     }
 
     private void on_buff_tick(Player player, PlayerRef playerRef, PlayerState state, HealPreviewHUDGUI healthPreviewGUI)
