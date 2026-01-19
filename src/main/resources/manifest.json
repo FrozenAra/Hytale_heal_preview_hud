@@ -1,0 +1,20 @@
+{
+  "Group": "com.frozenara.healpreviewhud",
+  "Name": "Heal Preview HUD",
+  "Version": "1.0.0",
+  "Description": "Hytale mod that shows a heal preview for held items and healing buffs.",
+  "Authors": [
+    {
+      "Name": "FrozenAra",
+      "Email": "frozenara@frozenara.com",
+      "Url": "https://github.com/frozenara"
+    }
+  ],
+  "Website": "https://github.com/frozenara",
+  "ServerVersion": "*",
+  "Dependencies": {},
+  "OptionalDependencies": {},
+  "DisabledByDefault": false,
+  "IncludesAssetPack": true,
+  "Main": "com.frozenara.healpreviewhud.HealPreviewHUD"
+}

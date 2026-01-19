@@ -1,0 +1,78 @@
+@BottomMargin = 30;
+@ContainerMargin = 6;
+
+@HotbarSlotSpacingHud = 4;
+@HotbarSlotSpacingMenu = 2;
+@DefaultItemSlotsPerRow = 9;
+@DefaultItemSlotSpacing = 2;
+@DefaultItemSlotSize = 74;
+@DefaultItemGridBackground = #202c3b(0);
+@DefaultItemGridPadding = 2;
+@DefaultItemSlotsSelector = 4;
+
+@HotbarWidthHud = @DefaultItemSlotSize * @DefaultItemSlotsPerRow + @HotbarSlotSpacingHud * @DefaultItemSlotsPerRow;
+@HotbarWidthMenu = @DefaultItemSlotSize * @DefaultItemSlotsPerRow + @HotbarSlotSpacingMenu * @DefaultItemSlotsPerRow;
+@HotbarHeight = @DefaultItemSlotSize + (2 * @DefaultItemGridPadding);
+@InventoryClosedContainerMargin = @BottomMargin + @ContainerMargin;
+
+@AdventureIcon = "HealthIcon.png";
+@AdventureBarFillRegenerate = "HealthBarRegeneration.png";
+@AdventureBarFillPreview = "HealthBarFillPreview.png";
+@AdventureBarFill = "HealthBarFill.png";
+@CreativeIcon = "CreativeHealthIcon.png";
+@CreativeBarFill = "CreativeHealthBarFill.png";
+
+Group {
+  LayoutMode: Bottom;
+  Anchor: (Bottom: @InventoryClosedContainerMargin + @HotbarHeight + 6, Width: @HotbarWidthHud, Height: 12);
+
+  Group {
+    LayoutMode: Left;
+
+    Group {
+      Anchor: (Left: 0, Width: 28, Height: 24, Top: -8);
+
+      Group #Icon {
+        Anchor: (Left: 0, Width: 24, Height: 24);
+        Background: @AdventureIcon;
+      }
+
+      Group #IconCreative {
+        Anchor: (Left: 0, Width: 24, Height: 24);
+        Background: @CreativeIcon;
+        Visible: false;
+      }
+    }
+
+    Group {
+      Anchor: (Left: 0, Width: 318, Height: 12);
+      Background: "HealthBackground.png";
+
+      ProgressBar #ProgressBarFillBuff {
+        Anchor: (Width: 318, Height: 12);
+        BarTexturePath: @AdventureBarFillRegenerate;
+      }
+
+      ProgressBar #ProgressBarHealthPreview {
+        Anchor: (Width: 318, Height: 12);
+        BarTexturePath: @AdventureBarFillPreview;
+      }
+
+      ProgressBar #ProgressBarHealth {
+        Anchor: (Width: 318, Height: 12);
+        BarTexturePath: @AdventureBarFill;
+      }
+
+      ProgressBar #ProgressBarHealthCreative {
+        Anchor: (Width: 318, Height: 12);
+        BarTexturePath: @CreativeBarFill;
+        Visible: false;
+      }
+
+      ProgressBar #ProgressBarEffect {
+        Anchor: (Width: 318, Height: 12);
+        BarTexturePath: "HealthBarEffect.png";
+      }
+    }
+  }
+}
