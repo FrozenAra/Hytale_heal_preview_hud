@@ -192,6 +192,56 @@ public class HealPreviewHUD extends JavaPlugin {
         return instant_heal_value;
     }
 
+    private float check_and_return_max_health_buff(EntityEffect entityEffect)
+    {
+        // Currently there seems to be no way to actually fetch the buff values of the two max health boost buffs, so we have to do it this way.
+        String MEAT_BUFF_T1 = "Meat_Buff_T1";
+        String MEAT_BUFF_T2 = "Meat_Buff_T2";
+
+        if(entityEffect.getId().equals(MEAT_BUFF_T1))
+        {
+            return 0.05f;
+        } else if (entityEffect.getId().equals(MEAT_BUFF_T2)) {
+            return 0.1f;
+        }
+        return 0;
+    }
+
+    public float getMaxHealthBuffOfCurrentHeldItem(Player player) {
+        HeldItemEffectData data = getHeldItemEffectData(player);
+        if (data == null) {
+            return 0;
+        }
+
+        RootInteraction effect = data.effect();
+
+        for (int i = 0; i < effect.getOperationMax(); i++) {
+            Operation operation = effect.getOperation(i);
+            if (operation == null) {
+                continue;
+            }
+
+            Operation inner = operation.getInnerOperation();
+            if (inner instanceof ApplyEffectInteraction applyEffect) {
+                try {
+                    Field field = ApplyEffectInteraction.class.getDeclaredField("effectId");
+                    field.setAccessible(true);
+                    String effectId = (String) field.get(applyEffect);
+                    EntityEffect entityEffect = EntityEffect.getAssetMap().getAsset(effectId);
+                    if (entityEffect != null) {
+                        float maxHealthBuff = check_and_return_max_health_buff(entityEffect);
+                        if (maxHealthBuff > 0) {
+                            return maxHealthBuff;
+                        }
+                    }
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    continue;
+                }
+            }
+        }
+        return 0;
+    }
+
     public float getBuffHealValueOfCurrentHeldItem(Player player) {
         HeldItemEffectData data = getHeldItemEffectData(player);
         if (data == null) {
