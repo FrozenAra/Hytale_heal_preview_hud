@@ -289,26 +289,19 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
                     Int2FloatMap entityStatMap = entityEffect.getEntityStats();
                     if (entityStatMap != null) {
                         float item_heal_value = entityStatMap.get(HEALTH);
-                        float interval = entityEffect.getDamageCalculatorCooldown();
-                        float final_buff_heal_amount = healthPreview.get_final_buff_heal_value(entityEffect.getValueType(),item_heal_value, remaining_buff_duration, interval, state.stored_max_health);
+                        float final_buff_heal_amount = healthPreview.get_final_buff_heal_value(entityEffect.getValueType(),item_heal_value, remaining_buff_duration, entityEffect.getDamageCalculatorCooldown(), state.stored_max_health);
                         float final_buff_heal_amount_percent = (final_buff_heal_amount / state.stored_max_health) + state.current_health_percentage;
                         update_health_preview_on_hud(player, state, healthPreviewGUI);
                         update_current_health_on_hud(state, healthPreviewGUI);
-                        float final_heal_amount_percent = normalize_percent_for_ui(final_buff_heal_amount_percent + state.instant_heal_value_percent);
+                        float final_heal_amount_percent = Math.min(final_buff_heal_amount_percent + state.instant_heal_value_percent, 1.0f);
+                        // Round to 2 decimal places to reduce UI jumpiness without flattening the preview value
+                        // This is the least amount of precision I can possibly use, or it will break the preview too much
+                        final_heal_amount_percent = Math.round(final_heal_amount_percent * 100) / 100.0f;
                         healthPreviewGUI.updateFillBuff(final_heal_amount_percent);
                     }
                 }
                 break;
             }
         }
-    }
-
-    private float normalize_percent_for_ui(float value)
-    {
-        double clamped = Math.max(0.0, Math.min(value, 1.0));
-        // Round to nearest 0.05 (5%) to prevent visual jitter from small fluctuations
-        // This avoids oscillation when buff heal decreases while current health increases
-        double rounded = Math.round(clamped * 20.0) / 20.0;
-        return (float) rounded;
     }
 }

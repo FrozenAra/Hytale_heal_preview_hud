@@ -290,20 +290,14 @@ public class HealPreviewHUD extends JavaPlugin {
 
 
     public float get_final_buff_heal_value(ValueType value_type, float item_heal_value, float buff_duration, float interval, float max_player_health) {
-        if (interval <= 0.0f) {
-            return 0;
-        }
-        // Use floor + 1 instead of ceil to get stable step counts as buff ticks down
-        // ceil causes oscillation when duration crosses interval boundaries (e.g., 7.0 vs 6.9)
-        double division_result = buff_duration / interval;
-        double floor_result = Math.floor(division_result);
-        float amount_steps = (float) (floor_result + 1);
         switch (value_type) {
             case ValueType.Absolute -> {
+                float amount_steps = buff_duration / interval;
                 return item_heal_value * amount_steps;
             }
             case ValueType.Percent -> {
                 float heal_step = max_player_health * (item_heal_value / 100);
+                float amount_steps = buff_duration / interval;
                 return heal_step * amount_steps;
             }
             default -> {
