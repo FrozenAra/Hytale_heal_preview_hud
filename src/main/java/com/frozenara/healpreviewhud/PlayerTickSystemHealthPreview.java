@@ -35,6 +35,7 @@ class PlayerState {
     float instant_heal_value_percent = 0.0f;
     Item item_in_hand = null;
     GameMode stored_gamemode = null;
+    float regen_preview_cache = 0.0f;
 }
 
 public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntityStore>
@@ -146,7 +147,7 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
                 }
                 else
                 {
-                    onSelectedNonConsumableOnHotbar(healthPreviewGUI);
+                    onSelectedNonConsumableOnHotbar(state, healthPreviewGUI);
                     do_ui_update = true;
                 }
                 hotbar_selection_changed = true;
@@ -155,7 +156,7 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
         else if(state.item_in_hand != null)
         {
             state.item_in_hand = null;  // Mark that we've handled the empty state
-            onSelectedEmptySlotOnHotbar(healthPreviewGUI);
+            onSelectedEmptySlotOnHotbar(state, healthPreviewGUI);
             do_ui_update = true;
             hotbar_selection_changed = true;
         }
@@ -209,29 +210,32 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
 
     private void onSelectedConsumableOnHotbar(Player player, PlayerState state, HealPreviewHUDGUI healthPreviewGUI)
     {
-        clear_health_preview(healthPreviewGUI);
+        clear_health_preview(state, healthPreviewGUI);
         update_health_preview_on_hud(player, state, healthPreviewGUI);
         update_health_buff_preview_on_hud(player, state, healthPreviewGUI);
     }
 
-    private void onSelectedNonConsumableOnHotbar(HealPreviewHUDGUI healthPreviewGUI)
+    private void onSelectedNonConsumableOnHotbar(PlayerState state, HealPreviewHUDGUI healthPreviewGUI)
     {
-        clear_health_preview(healthPreviewGUI);
+        clear_health_preview(state, healthPreviewGUI);
     }
 
-    private void onSelectedEmptySlotOnHotbar(HealPreviewHUDGUI healthPreviewGUI)
+    private void onSelectedEmptySlotOnHotbar(PlayerState state, HealPreviewHUDGUI healthPreviewGUI)
     {
         // Only reset the health preview once when switching to empty slot
         // Check if item_in_hand is not null (meaning we had an item before)
-        clear_health_preview(healthPreviewGUI);
+        clear_health_preview(state, healthPreviewGUI);
     }
 
-    private void clear_health_preview(HealPreviewHUDGUI healthPreviewGUI)
+    private void clear_health_preview(PlayerState state, HealPreviewHUDGUI healthPreviewGUI)
     {
         if(healthPreviewGUI != null)
         {
             healthPreviewGUI.updateInstantHealthPreview(0);
             healthPreviewGUI.updateRegenPreview(0);
+            if (state != null) {
+                state.regen_preview_cache = 0;
+            }
         }
     }
 
@@ -281,6 +285,7 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
         {
             // Set regen preview to 0 when no buff is active
             healthPreviewGUI.updateRegenPreview(0);
+            state.regen_preview_cache = 0;
             return;
         }
         for (ActiveEntityEffect buff : buff_array) {
@@ -297,14 +302,22 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
                         update_health_preview_on_hud(player, state, healthPreviewGUI);
                         update_current_health_on_hud(state, healthPreviewGUI);
                         float final_heal_amount_percent = Math.min(final_buff_heal_amount_percent + state.instant_heal_value_percent, 1.0f);
-                        // Round to 2 decimal places to reduce UI jumpiness without flattening the preview value
-                        // This is the least amount of precision I can possibly use, or it will break the preview too much
-                        final_heal_amount_percent = Math.round(final_heal_amount_percent * 100) / 100.0f;
-                        healthPreviewGUI.updateRegenPreview(final_heal_amount_percent);
+                        float tolerance = 0.01f;
+                        // Only update the UI if the heal preview has changed by more than the tolerance, otherwise floating point precision can cause UI jitter
+                        // Also force update if its 0 or 1 just in case
+                        if(!isWithin(final_heal_amount_percent, state.regen_preview_cache, tolerance) || final_heal_amount_percent <= 0.0f || final_heal_amount_percent >= 1.0f)
+                        {
+                            healthPreviewGUI.updateRegenPreview(final_heal_amount_percent);
+                            state.regen_preview_cache = final_heal_amount_percent;
+                        }
                     }
                 }
                 break;
             }
         }
+    }
+
+    static boolean isWithin(double value, double target, double tolerance) {
+        return value >= target - tolerance && value <= target + tolerance;
     }
 }
