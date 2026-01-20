@@ -23,7 +23,6 @@ import it.unimi.dsi.fastutil.ints.Int2FloatMap;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 /**
  * Per-player state container to avoid shared state issues in multiplayer
@@ -232,7 +231,7 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
         if(healthPreviewGUI != null)
         {
             healthPreviewGUI.updateInstantHealthPreview(0);
-            healthPreviewGUI.updateFillBuff(0);
+            healthPreviewGUI.updateRegenPreview(0);
         }
     }
 
@@ -269,7 +268,7 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
         float heal_value_percent = (heal_value_absolute / state.stored_max_health) + state.current_health_percentage + state.instant_heal_value_percent;
         if(heal_value_absolute != 0.0f)
         {
-            healthPreviewGUI.updateFillBuff(heal_value_percent);
+            healthPreviewGUI.updateRegenPreview(heal_value_percent);
         }
     }
 
@@ -278,7 +277,12 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
         if(is_player_holding_health_buff_consumable(player)) return;
         if(player == null || playerRef == null || state == null || healthPreviewGUI == null) return;
         ActiveEntityEffect[] buff_array = healthPreview.getCurrentPlayerBuffs(playerRef);
-        if(buff_array == null) return;
+        if(buff_array == null)
+        {
+            // Set regen preview to 0 when no buff is active
+            healthPreviewGUI.updateRegenPreview(0);
+            return;
+        }
         for (ActiveEntityEffect buff : buff_array) {
             if(healthPreview.is_active_entity_effect_a_health_regen_buff(buff))
             {
@@ -296,7 +300,7 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
                         // Round to 2 decimal places to reduce UI jumpiness without flattening the preview value
                         // This is the least amount of precision I can possibly use, or it will break the preview too much
                         final_heal_amount_percent = Math.round(final_heal_amount_percent * 100) / 100.0f;
-                        healthPreviewGUI.updateFillBuff(final_heal_amount_percent);
+                        healthPreviewGUI.updateRegenPreview(final_heal_amount_percent);
                     }
                 }
                 break;

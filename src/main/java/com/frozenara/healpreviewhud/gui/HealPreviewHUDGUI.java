@@ -35,7 +35,7 @@ public class HealPreviewHUDGUI extends CustomUIHud {
         updateHealth(cachedNormalHealth, cachedInstantHealthPreview, cachedBuffHealthPreview);
         setCurrentHealth(cachedNormalHealth);
         updateInstantHealthPreview(cachedInstantHealthPreview);
-        updateFillBuff(cachedBuffHealthPreview);
+        updateRegenPreview(cachedBuffHealthPreview);
         setCreativeMode(cachedIsCreativeMode);
         builder.set("#ProgressBarHealthCreative.Value", 1);
     }
@@ -56,7 +56,7 @@ public class HealPreviewHUDGUI extends CustomUIHud {
         builder.set("#ProgressBarHealthPreview.Value", instant_health_preview);
     }
 
-    public void updateFillBuff(float buff_health_preview) {
+    public void updateRegenPreview(float buff_health_preview) {
         cachedBuffHealthPreview = buff_health_preview;
         builder.set("#ProgressBarFillBuff.Value", buff_health_preview);
     }
