@@ -43,8 +43,6 @@ import java.util.logging.Level;
 public class HealPreviewHUD extends JavaPlugin {
 
     private static HealPreviewHUD instance;
-    public static final int HEALTH = 8;
-    public static final int STAMINA = 9; // Unused for now but in case we need it
     public static Map<PlayerRef, HealPreviewHUDGUI> playerGuiMap = new HashMap<>();
 
     public static Map<PlayerRef, HealPreviewHUDGUI> getPlayerGuiMap() {
@@ -159,8 +157,9 @@ public class HealPreviewHUD extends JavaPlugin {
                     EntityEffect entityEffect = EntityEffect.getAssetMap().getAsset(effectId);
                     if (entityEffect != null) {
                         Int2FloatMap entityStatMap = entityEffect.getEntityStats();
+                        getLogger().atInfo().log("Fetched health value: " + DefaultEntityStatTypes.getHealth() +  "Entity effect: " + entityEffect.toString());
                         if (entityStatMap != null) {
-                            float item_heal_value = entityStatMap.get(HEALTH);
+                            float item_heal_value = entityStatMap.get(DefaultEntityStatTypes.getHealth());
                             if (item_heal_value > 0) {
                                 ValueType value_type = entityEffect.getValueType();
                                 float buff_duration = entityEffect.getDuration();
@@ -268,7 +267,7 @@ public class HealPreviewHUD extends JavaPlugin {
                     if (entityEffect != null) {
                         Int2FloatMap entityStatMap = entityEffect.getEntityStats();
                         if (entityStatMap != null) {
-                            float item_heal_value = entityStatMap.get(HEALTH);
+                            float item_heal_value = entityStatMap.get(DefaultEntityStatTypes.getHealth());
                             if (item_heal_value > 0) {
                                 float buff_duration = entityEffect.getDuration();
                                 boolean is_buff = buff_duration > 0.1f;
@@ -332,7 +331,7 @@ public class HealPreviewHUD extends JavaPlugin {
         }
         Int2FloatMap entityStatMap = entityEffect.getEntityStats();
         if (entityStatMap != null) {
-            float item_heal_value = entityStatMap.get(HEALTH);
+            float item_heal_value = entityStatMap.get(DefaultEntityStatTypes.getHealth());
             if (item_heal_value > 0) {
                 float buff_duration = entityEffect.getDuration();
                 return buff_duration > 0.1f;

@@ -15,6 +15,7 @@ import com.hypixel.hytale.server.core.entity.effect.ActiveEntityEffect;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
@@ -23,8 +24,6 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-
-import static com.frozenara.healpreviewhud.HealPreviewHUD.HEALTH;
 
 /**
  * Per-player state container to avoid shared state issues in multiplayer
@@ -288,7 +287,7 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
                 if (entityEffect != null) {
                     Int2FloatMap entityStatMap = entityEffect.getEntityStats();
                     if (entityStatMap != null) {
-                        float item_heal_value = entityStatMap.get(HEALTH);
+                        float item_heal_value = entityStatMap.get(DefaultEntityStatTypes.getHealth());
                         float final_buff_heal_amount = healthPreview.get_final_buff_heal_value(entityEffect.getValueType(),item_heal_value, remaining_buff_duration, entityEffect.getDamageCalculatorCooldown(), state.stored_max_health);
                         float final_buff_heal_amount_percent = (final_buff_heal_amount / state.stored_max_health) + state.current_health_percentage;
                         update_health_preview_on_hud(player, state, healthPreviewGUI);
