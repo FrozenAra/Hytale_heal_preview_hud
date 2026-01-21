@@ -15,6 +15,7 @@ public class HealPreviewHUDGUI extends CustomUIHud {
     private float cachedInstantHealthPreview = 0.0f;
     private float cachedBuffHealthPreview = 0.0f;
     private boolean cachedIsCreativeMode = false;
+    private boolean cachedIsVisible = true;
 
     public HealPreviewHUDGUI(@Nonnull PlayerRef playerRef) {
         super(playerRef);
@@ -37,6 +38,7 @@ public class HealPreviewHUDGUI extends CustomUIHud {
         updateInstantHealthPreview(cachedInstantHealthPreview);
         updateRegenPreview(cachedBuffHealthPreview);
         setCreativeMode(cachedIsCreativeMode);
+        setHealthHudVisible(cachedIsVisible);
         builder.set("#ProgressBarHealthCreative.Value", 1);
     }
 
@@ -73,6 +75,11 @@ public class HealPreviewHUDGUI extends CustomUIHud {
     public void setCurrentHealth(float health) {
         cachedNormalHealth = health;
         builder.set("#ProgressBarHealth.Value", health);
+    }
+
+    public void setHealthHudVisible(boolean visible) {
+        cachedIsVisible = visible;
+        builder.set("#MainContainer.Visible", visible);
     }
 
     public void updateUI(boolean clear_ui){

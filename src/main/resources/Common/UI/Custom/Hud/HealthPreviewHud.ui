@@ -22,7 +22,7 @@
 @CreativeIcon = "CreativeHealthIcon.png";
 @CreativeBarFill = "CreativeHealthBarFill.png";
 
-Group {
+Group #MainContainer {
   LayoutMode: Bottom;
   Anchor: (Bottom: @InventoryClosedContainerMargin + @HotbarHeight + 6, Width: @HotbarWidthHud, Height: 12);
 

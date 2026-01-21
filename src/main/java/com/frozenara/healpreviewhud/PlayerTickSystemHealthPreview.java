@@ -1,5 +1,6 @@
 package com.frozenara.healpreviewhud;
 
+import com.frozenara.healpreviewhud.api.player_api;
 import com.frozenara.healpreviewhud.gui.HealPreviewHUDGUI;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
@@ -92,6 +93,9 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
 
         HealPreviewHUDGUI healthPreviewGUI = HealPreviewHUD.getPlayerGuiMap().get(playerRef);
 
+        if(healthPreviewGUI == null) return;
+
+        healthPreviewGUI.setHealthHudVisible(!player_api.is_world_map_open(player));
 
         if(state.stored_gamemode == null)
         {
