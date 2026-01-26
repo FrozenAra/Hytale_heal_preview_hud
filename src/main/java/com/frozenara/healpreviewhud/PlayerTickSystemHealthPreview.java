@@ -107,10 +107,15 @@ public class PlayerTickSystemHealthPreview extends EntityTickingSystem<EntitySto
             state.stored_gamemode = player.getGameMode();
             // Game mode changed
             healthPreviewGUI.setCreativeMode(player.getGameMode() == GameMode.Creative);
+            do_ui_update = true;
         }
         if(state.stored_gamemode == GameMode.Creative)
         {
             // We dont need to do all this if the gamemode is creative
+            if(do_ui_update)
+            {
+                healthPreviewGUI.updateUI(true);
+            }
             return;
         }
 
