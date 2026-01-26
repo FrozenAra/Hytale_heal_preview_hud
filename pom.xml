@@ -17,18 +17,26 @@
             <id>hytale-modding</id>
             <url>https://maven.hytale-modding.info/releases</url>
         </repository>
+        <repository>
+            <id>hytale-release</id>
+            <url>https://maven.hytale.com/release</url>
+        </repository>
+        <repository>
+            <id>hytale-pre-release</id>
+            <url>https://maven.hytale.com/pre-release</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
             <groupId>com.hypixel.hytale</groupId>
-            <artifactId>HytaleServer-parent</artifactId>
-            <version>1.0</version>
+            <artifactId>Server</artifactId>
+            <version>2026.01.24-6e2d4fc36</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.buuz135</groupId>
             <artifactId>MultipleHUD</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
     </dependencies>
 </project>
