@@ -157,7 +157,6 @@ public class HealPreviewHUD extends JavaPlugin {
                     EntityEffect entityEffect = EntityEffect.getAssetMap().getAsset(effectId);
                     if (entityEffect != null) {
                         Int2FloatMap entityStatMap = entityEffect.getEntityStats();
-                        getLogger().atInfo().log("Fetched health value: " + DefaultEntityStatTypes.getHealth() +  "Entity effect: " + entityEffect.toString());
                         if (entityStatMap != null) {
                             float item_heal_value = entityStatMap.get(DefaultEntityStatTypes.getHealth());
                             if (item_heal_value > 0) {
